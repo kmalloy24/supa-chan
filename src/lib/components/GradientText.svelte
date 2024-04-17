@@ -2,7 +2,7 @@
 </script>
 
 <p
-	class="via-accent animate-gradient-xy bg-gradient-to-tl from-primary-300 to-primary-500 bg-clip-text text-transparent"
+	class="via-accent animate-gradient-xy bg-gradient-to-tl from-primary-100 to-primary-500 bg-clip-text text-transparent"
 >
 	<slot />
 </p>

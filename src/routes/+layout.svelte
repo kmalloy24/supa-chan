@@ -58,10 +58,10 @@
 			</svelte:fragment>
 			<svelte:fragment slot="trail">
 				<a
-					href="https://supafork.com/new?repository_url=https%3A%2F%2Fgithub.com%2Fkmalloy24%2FS3DT"
+					href="https://supafork.com/new?repository_url=https%3A%2F%2Fgithub.com%2Fkmalloy24%2Fsupa-chan"
 					><img src="https://supafork.com/button" alt="Fork Supabase Database" /></a
 				>
-				<a href="https://github.com/kmalloy24/S3DT" target="_blank" rel="noreferrer">
+				<a href="https://github.com/kmalloy24/supa-chan" target="_blank" rel="noreferrer">
 					<svg
 						class="fill-primary-500 mx-2"
 						xmlns="http://www.w3.org/2000/svg"
