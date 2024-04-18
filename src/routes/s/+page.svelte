@@ -8,7 +8,7 @@
 
 		<span class="flex items-center text-xl"
 			>Your user ID is <p class="text-4xl font-bold">
-				<GradientText>c2296</GradientText>
+				<GradientText>12345</GradientText>
 			</p></span
 		>
 		<form>
