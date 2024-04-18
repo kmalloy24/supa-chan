@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { ConicGradient } from '@skeletonlabs/skeleton';
-	import type { ConicStop } from '@skeletonlabs/skeleton';
+	import { ConicGradient, getToastStore } from '@skeletonlabs/skeleton';
+	import type { ConicStop, ToastSettings } from '@skeletonlabs/skeleton';
 
 	import GradientText from '$lib/components/GradientText.svelte';
 	import { onMount, onDestroy } from 'svelte';
@@ -40,6 +40,7 @@
 					console.log('Change received!', payload);
 					if (payload.eventType === 'INSERT') {
 						posts = [payload.new, ...posts];
+						toastStore.trigger(success);
 					} else if (payload.eventType === 'UPDATE') {
 						posts = posts.map((post) => (post.id === payload.new.id ? payload.new : post));
 					} else if (payload.eventType === 'DELETE') {
@@ -77,6 +78,16 @@
 		const date = fromUnixTime(Date.parse(timestamp) / 1000);
 		return formatDistanceToNow(date, { addSuffix: true });
 	}
+
+	// TOASTS
+	const toastStore = getToastStore();
+
+	const success: ToastSettings = {
+		message: '📨 New Post Added!',
+		background: 'variant-filled-primary',
+		hideDismiss: true,
+		timeout: 2000 // ms -> 5 sec
+	};
 </script>
 
 <div class="container mx-auto flex justify-center items-center my-8">

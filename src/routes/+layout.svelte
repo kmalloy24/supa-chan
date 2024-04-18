@@ -4,9 +4,13 @@
 
 	// Floating UI for Popups
 	import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
-	import { storePopup } from '@skeletonlabs/skeleton';
+	import { storePopup, initializeStores, Toast } from '@skeletonlabs/skeleton';
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
+	initializeStores();
 </script>
+
+<!-- Implement a single instance of the toast component in your app's root layout, above the App Shell (if present). -->
+<Toast />
 
 <!-- App Shell -->
 <AppShell>
