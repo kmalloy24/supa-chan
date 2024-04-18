@@ -17,7 +17,8 @@
 		const { data, error } = await supabase
 			.from('posts')
 			.select('*')
-			.order('created_at', { ascending: false });
+			.order('created_at', { ascending: false })
+			.range(0, 999); //replace with infinite scroll
 		if (error) {
 			console.error('Error fetching posts:', error);
 		} else {
