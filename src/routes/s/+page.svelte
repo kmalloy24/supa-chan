@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { ConicGradient, getToastStore } from '@skeletonlabs/skeleton';
 	import type { ConicStop, ToastSettings } from '@skeletonlabs/skeleton';
-
 	import GradientText from '$lib/components/GradientText.svelte';
 	import { onMount, onDestroy } from 'svelte';
 	import { fromUnixTime, formatDistanceToNow } from 'date-fns';
+	import { superForm } from 'sveltekit-superforms/client';
 
 	export let data;
 	$: ({ session, supabase } = data);
@@ -89,6 +89,38 @@
 		hideDismiss: true,
 		timeout: 2000 // ms -> 5 sec
 	};
+	const error: ToastSettings = {
+		message: '⚠️ Error',
+		background: 'variant-error-primary',
+		hideDismiss: true,
+		timeout: 2000 // ms -> 5 sec
+	};
+	const failure: ToastSettings = {
+		message: '🤔 ...something went wrong',
+		background: 'variant-error-primary',
+		hideDismiss: true,
+		timeout: 2000 // ms -> 5 sec
+	};
+
+	//Superforms
+	const { form, errors, enhance } = superForm(data.form, {
+		onResult: ({ result }) => {
+			switch (result.type) {
+				case 'success':
+					toastStore.trigger(success);
+					break;
+				case 'error':
+					toastStore.trigger(error);
+					break;
+				case 'failure':
+					toastStore.trigger(error);
+					break;
+				default:
+					return;
+			}
+			return;
+		}
+	});
 </script>
 
 <div class="container mx-auto flex justify-center items-center my-8">
@@ -100,9 +132,18 @@
 				<GradientText>{trimUserId(session.user.id)}</GradientText>
 			</p></span
 		>
-		<form>
+		<form method="POST" use:enhance>
 			<span class="flex justify-between gap-x-2">
-				<textarea class="textarea md:w-96 w-72" rows="2" placeholder="140 characters max." />
+				<label class="label" for="content">
+					<textarea
+						name="content"
+						bind:value={$form.content}
+						class="textarea md:w-96 w-72"
+						rows="2"
+						placeholder="140 characters max."
+					/>
+				</label>
+
 				<button type="submit" class="btn variant-ghost-primary hover:variant-filled-primary"
 					><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"
 						><path
@@ -112,6 +153,9 @@
 					>
 				</button>
 			</span>
+			{#if $errors.content}
+				<span class="block text-error-500">{$errors.content}</span>
+			{/if}
 		</form>
 	</div>
 </div>
