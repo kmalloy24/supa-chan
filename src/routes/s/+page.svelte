@@ -1,14 +1,21 @@
 <script lang="ts">
 	import GradientText from '$lib/components/GradientText.svelte';
+
+	export let data;
+	$: ({ session, supabase } = data);
+
+	function trimUserId(userId: string): string {
+		return userId.slice(-5);
+	}
 </script>
 
 <div class="container mx-auto flex justify-center items-center my-8">
 	<div class="space-y-10 text-center flex flex-col items-center">
 		<h1 class="h1 font-bold text-primary-500">/s</h1>
 
-		<span class="flex items-center text-xl"
-			>Your user ID is <p class="text-4xl font-bold">
-				<GradientText>12345</GradientText>
+		<span class="text-xl"
+			>Your user ID is <p class="text-4xl font-bold ml-2">
+				<GradientText>{trimUserId(session.user.id)}</GradientText>
 			</p></span
 		>
 		<form>

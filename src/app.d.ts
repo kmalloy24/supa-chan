@@ -9,7 +9,9 @@ declare namespace App {
 			user: User | null;
 		}>;
 	}
-	// interface PageData {}
+	interface PageData {
+		session: Session | null;
+	}
 	// interface Error {}
 	// interface Platform {}
 }
