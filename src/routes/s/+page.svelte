@@ -39,7 +39,7 @@
 				(payload) => {
 					console.log('Change received!', payload);
 					if (payload.eventType === 'INSERT') {
-						posts = [...posts, payload.new];
+						posts = [payload.new, ...posts];
 					} else if (payload.eventType === 'UPDATE') {
 						posts = posts.map((post) => (post.id === payload.new.id ? payload.new : post));
 					} else if (payload.eventType === 'DELETE') {
@@ -89,8 +89,8 @@
 			</p></span
 		>
 		<form>
-			<span class="flex justify-between">
-				<textarea class="textarea w-96" rows="2" placeholder="Enter some long form content." />
+			<span class="flex justify-between gap-x-2">
+				<textarea class="textarea md:w-96 w-72" rows="2" placeholder="140 characters max." />
 				<button type="submit" class="btn variant-ghost-primary hover:variant-filled-primary"
 					><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"
 						><path
@@ -119,9 +119,13 @@
 					{post.content}
 				</section>
 				<footer class="card-footer flex justify-end">
-					<p class="text-2xl font-bold">
-						<GradientText>{trimUserId(post.user_id)}</GradientText>
-					</p>
+					{#if post.user_id == session.user.id}
+						<p class="text-xl font-bold">
+							<GradientText>{trimUserId(post.user_id)}</GradientText>
+						</p>
+					{:else}
+						<p class="text-primary-500 text-xl">{trimUserId(post.user_id)}</p>
+					{/if}
 				</footer>
 			</div>
 		{/each}
