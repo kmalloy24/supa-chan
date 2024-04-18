@@ -1,6 +1,6 @@
 // IMPORTS
 // Svelte
-import { error, fail, redirect } from '@sveltejs/kit';
+import { error, fail } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 // Superforms
 import { message, superValidate } from 'sveltekit-superforms/server';
@@ -10,10 +10,6 @@ import { postSchema } from '$lib/zod-schemas';
 
 // LOAD FUNCTION
 export const load: PageServerLoad = async (event) => {
-	const session = await event.locals.safeGetSession();
-	if (!session) {
-		redirect(302, '/');
-	}
 	return {
 		form: await superValidate(zod(postSchema))
 	};
@@ -36,16 +32,19 @@ export const actions: Actions = {
 		}
 
 		// prettier-ignore
-		const { error: newPostError } = await event.locals.supabase
-			.from('posts')
-			.insert({
-				...form.data,
-				user_id: session.user.id
-			});
+		const { data: newPost, error: newPostError } = await event.locals.supabase
+		.from('posts')
+		.insert({
+			...form.data,
+			user_id: session.user.id
+		})
+		.single();
 
-		//server error handling
 		if (newPostError) {
+			console.error('Error creating post:', newPostError);
 			return message(form, 'Error creating post.');
 		}
+
+		console.log('New post created:', newPost);
 	}
 };

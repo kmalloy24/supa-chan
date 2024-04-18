@@ -83,12 +83,6 @@
 	// TOASTS
 	const toastStore = getToastStore();
 
-	const success: ToastSettings = {
-		message: '📨 New Post Added!',
-		background: 'variant-filled-primary',
-		hideDismiss: true,
-		timeout: 2000 // ms -> 5 sec
-	};
 	const error: ToastSettings = {
 		message: '⚠️ Error',
 		background: 'variant-error-primary',
