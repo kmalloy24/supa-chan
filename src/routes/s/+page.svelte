@@ -1,15 +1,12 @@
 <script lang="ts">
 	import GradientText from '$lib/components/GradientText.svelte';
-	import { onMount } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
 
 	export let data;
 	$: ({ session, supabase } = data);
 
-	function trimUserId(userId: string): string {
-		return userId.slice(-5);
-	}
-
 	let posts = [];
+	let channel;
 
 	async function fetchPosts() {
 		const { data, error } = await supabase.from('posts').select('*');
@@ -21,7 +18,75 @@
 		}
 	}
 
-	onMount(fetchPosts);
+	function subscribeToPostsChanges() {
+		channel = supabase
+			.channel('posts-changes')
+			.on(
+				'postgres_changes',
+				{
+					event: '*',
+					schema: 'public',
+					table: 'posts'
+				},
+				(payload) => {
+					console.log('Change received!', payload);
+					if (payload.eventType === 'INSERT') {
+						posts = [...posts, payload.new];
+					} else if (payload.eventType === 'UPDATE') {
+						posts = posts.map((post) => (post.id === payload.new.id ? payload.new : post));
+					} else if (payload.eventType === 'DELETE') {
+						posts = posts.filter((post) => post.id !== payload.old.id);
+					}
+				}
+			)
+			.subscribe();
+	}
+
+	onMount(async () => {
+		await fetchPosts();
+		subscribeToPostsChanges();
+	});
+
+	onDestroy(() => {
+		if (channel) {
+			supabase.removeChannel(channel);
+		}
+	});
+
+	// HELPERS
+	function trimUserId(userId: string): string {
+		return userId.slice(-5);
+	}
+
+	function timeSince(timestamp: string): string {
+		const now = new Date();
+		const inputDate = new Date(timestamp);
+
+		const seconds = Math.floor((inputDate.getTime() - now.getTime()) / 1000);
+
+		const intervals = [
+			{ label: 'year', seconds: 31536000 },
+			{ label: 'month', seconds: 2592000 },
+			{ label: 'week', seconds: 604800 },
+			{ label: 'day', seconds: 86400 },
+			{ label: 'hour', seconds: 3600 },
+			{ label: 'minute', seconds: 60 },
+			{ label: 'second', seconds: 1 }
+		];
+
+		if (seconds < 0) {
+			return 'just now';
+		}
+
+		for (const { label, seconds: intervalSeconds } of intervals) {
+			const interval = Math.floor(seconds / intervalSeconds);
+			if (interval >= 1) {
+				return `in ${interval} ${label}${interval === 1 ? '' : 's'}`;
+			}
+		}
+
+		return 'just now';
+	}
 </script>
 
 <div class="container mx-auto flex justify-center items-center my-8">
@@ -54,6 +119,9 @@
 <div class="mx-auto my-8 gap-y-8 flex flex-col">
 	{#each posts as post (post.id)}
 		<div class="card mx-4">
+			<header class="card-header text-gray-500">
+				{timeSince(post.created_at)}
+			</header>
 			<section class="p-4">
 				{post.content}
 			</section>
