@@ -54,7 +54,7 @@
 					</defs>
 				</svg>
 
-				<strong class="text-xl uppercase text-primary-500">OSS Hackathon 2024</strong>
+				<strong class="text-lg uppercase text-primary-500">OSS Hackathon 2024</strong>
 			</svelte:fragment>
 			<svelte:fragment slot="trail">
 				<a

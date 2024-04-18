@@ -1,38 +1,18 @@
-# create-svelte
+# SUPAchan
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+[![Made with SvelteKit](https://img.shields.io/badge/Made%20with-SvelteKit-FF3E00?logo=svelte&logoColor=white)](https://kit.svelte.dev)
+[![Made with Tailwind CSS](https://img.shields.io/badge/Made%20with-Tailwind%20CSS-38B2AC?logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 
-## Creating a project
+## ⚡ Quickstart
 
-If you're seeing this, you've probably already done this step. Congrats!
+1. Clone repo
+2. `pnpm i`
+3. `pnpm dev`
+4. [![Fork Supabase Database](https://supafork.com/button)](https://supafork.com/new?repository_url=https%3A%2F%2Fgithub.com%2Fkmalloy24%2Fsupa-chan)
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
+5. create `.env.local` in the root directory and add
 
-# create a new project in my-app
-npm create svelte@latest my-app
+``` text
+PUBLIC_SUPABASE_URL=your_supabase_project_url
+PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 ```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
