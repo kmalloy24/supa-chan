@@ -1,6 +1,7 @@
 <script lang="ts">
 	import GradientText from '$lib/components/GradientText.svelte';
 	import { onMount, onDestroy } from 'svelte';
+	import { fromUnixTime, formatDistanceToNow } from 'date-fns';
 
 	export let data;
 	$: ({ session, supabase } = data);
@@ -9,8 +10,10 @@
 	let channel;
 
 	async function fetchPosts() {
-		const { data, error } = await supabase.from('posts').select('*');
-
+		const { data, error } = await supabase
+			.from('posts')
+			.select('*')
+			.order('created_at', { ascending: false });
 		if (error) {
 			console.error('Error fetching posts:', error);
 		} else {
@@ -59,33 +62,8 @@
 	}
 
 	function timeSince(timestamp: string): string {
-		const now = new Date();
-		const inputDate = new Date(timestamp);
-
-		const seconds = Math.floor((inputDate.getTime() - now.getTime()) / 1000);
-
-		const intervals = [
-			{ label: 'year', seconds: 31536000 },
-			{ label: 'month', seconds: 2592000 },
-			{ label: 'week', seconds: 604800 },
-			{ label: 'day', seconds: 86400 },
-			{ label: 'hour', seconds: 3600 },
-			{ label: 'minute', seconds: 60 },
-			{ label: 'second', seconds: 1 }
-		];
-
-		if (seconds < 0) {
-			return 'just now';
-		}
-
-		for (const { label, seconds: intervalSeconds } of intervals) {
-			const interval = Math.floor(seconds / intervalSeconds);
-			if (interval >= 1) {
-				return `in ${interval} ${label}${interval === 1 ? '' : 's'}`;
-			}
-		}
-
-		return 'just now';
+		const date = fromUnixTime(Date.parse(timestamp) / 1000);
+		return formatDistanceToNow(date, { addSuffix: true });
 	}
 </script>
 

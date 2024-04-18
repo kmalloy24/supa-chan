@@ -14,6 +14,9 @@ dependencies:
   '@supabase/supabase-js':
     specifier: ^2.42.4
     version: 2.42.4
+  date-fns:
+    specifier: ^3.6.0
+    version: 3.6.0
 
 devDependencies:
   '@skeletonlabs/skeleton':
@@ -936,6 +939,10 @@ packages:
     engines: {node: '>=4'}
     hasBin: true
     dev: true
+
+  /date-fns@3.6.0:
+    resolution: {integrity: sha512-fRHTG8g/Gif+kSh50gaGEdToemgfj74aRX3swtiouboip5JDLAyDE9F11nHMIcvOaXeOC6D7SpNhi7uFyB7Uww==}
+    dev: false
 
   /debug@4.3.4:
     resolution: {integrity: sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==}
