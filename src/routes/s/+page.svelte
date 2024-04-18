@@ -1,4 +1,7 @@
 <script lang="ts">
+	import { ConicGradient } from '@skeletonlabs/skeleton';
+	import type { ConicStop } from '@skeletonlabs/skeleton';
+
 	import GradientText from '$lib/components/GradientText.svelte';
 	import { onMount, onDestroy } from 'svelte';
 	import { fromUnixTime, formatDistanceToNow } from 'date-fns';
@@ -8,6 +11,7 @@
 
 	let posts = [];
 	let channel;
+	let loading = true;
 
 	async function fetchPosts() {
 		const { data, error } = await supabase
@@ -19,6 +23,7 @@
 		} else {
 			posts = data;
 		}
+		loading = false;
 	}
 
 	function subscribeToPostsChanges() {
@@ -46,6 +51,7 @@
 	}
 
 	onMount(async () => {
+		loading = true;
 		await fetchPosts();
 		subscribeToPostsChanges();
 	});
@@ -55,6 +61,12 @@
 			supabase.removeChannel(channel);
 		}
 	});
+
+	//LOADING
+	const conicStops: ConicStop[] = [
+		{ color: 'transparent', start: 0, end: 25 },
+		{ color: 'rgb(var(--color-primary-500))', start: 75, end: 100 }
+	];
 
 	// HELPERS
 	function trimUserId(userId: string): string {
@@ -95,19 +107,23 @@
 <hr class="!border-t-2 !border-primary-500 mx-24" />
 
 <div class="mx-auto my-8 gap-y-8 flex flex-col">
-	{#each posts as post (post.id)}
-		<div class="card mx-4">
-			<header class="card-header text-gray-500">
-				{timeSince(post.created_at)}
-			</header>
-			<section class="p-4">
-				{post.content}
-			</section>
-			<footer class="card-footer flex justify-end">
-				<p class="text-2xl font-bold">
-					<GradientText>{trimUserId(post.user_id)}</GradientText>
-				</p>
-			</footer>
-		</div>
-	{/each}
+	{#if loading}
+		<ConicGradient stops={conicStops} spin width="w-12"></ConicGradient>
+	{:else}
+		{#each posts as post (post.id)}
+			<div class="card mx-4">
+				<header class="card-header text-gray-500">
+					{timeSince(post.created_at)}
+				</header>
+				<section class="p-4">
+					{post.content}
+				</section>
+				<footer class="card-footer flex justify-end">
+					<p class="text-2xl font-bold">
+						<GradientText>{trimUserId(post.user_id)}</GradientText>
+					</p>
+				</footer>
+			</div>
+		{/each}
+	{/if}
 </div>
