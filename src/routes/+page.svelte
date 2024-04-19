@@ -1,12 +1,16 @@
 <script lang="ts">
+	// local components
 	import GradientText from '$lib/components/GradientText.svelte';
 
+	// from sveltekit
 	import { goto } from '$app/navigation';
 
+	// call supabase data from layout load
 	export let data;
 	let { supabase } = data;
 	$: ({ supabase } = data);
 
+	// create anon user
 	async function handleSignup() {
 		const { data, error } = await supabase.auth.signInAnonymously();
 
@@ -21,7 +25,10 @@
 
 <div class="container h-full mx-auto flex justify-center items-center">
 	<div class="space-y-10 text-center flex flex-col items-center">
+		<!-- heading -->
 		<h1 class="h1 font-bold"><GradientText>SUPAchan</GradientText></h1>
+
+		<!-- logo -->
 		<svg
 			width="28.073565mm"
 			height="29.097641mm"
@@ -38,6 +45,8 @@
 				/></g
 			></svg
 		>
+
+		<!-- text -->
 		<p class="text-xl">
 			Log in with <a
 				class="anchor"
@@ -51,6 +60,8 @@
 			to create and view posts in
 			<a class="anchor" href="https://supabase.com/realtime">realtime.</a>
 		</p>
+
+		<!-- signup button -->
 		<form on:submit|preventDefault={handleSignup}>
 			<button type="submit" class="btn variant-ghost-primary hover:variant-filled-primary"
 				><span>Log in as anon</span><span

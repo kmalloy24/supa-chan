@@ -1,18 +1,30 @@
 <script lang="ts">
+	// IMPORTS
+	// skeleton
 	import { ConicGradient, getToastStore } from '@skeletonlabs/skeleton';
 	import type { ConicStop, ToastSettings } from '@skeletonlabs/skeleton';
+	// local components
 	import GradientText from '$lib/components/GradientText.svelte';
+	// svelte
 	import { onMount, onDestroy } from 'svelte';
+	// timestamp helpers
 	import { fromUnixTime, formatDistanceToNow } from 'date-fns';
+	// superforms
 	import { superForm } from 'sveltekit-superforms/client';
 
-	export let data;
-	$: ({ session, supabase } = data);
-
-	let posts = [];
-	let channel;
+	// VARIABLES
+	let posts: any = [];
+	let channel: any;
 	let loading = true;
 
+	// PAGE DATA
+	export let data;
+
+	// DATA FETCHING
+	// load sb data and session
+	$: ({ session, supabase } = data);
+
+	// fetch posts
 	async function fetchPosts() {
 		const { data, error } = await supabase
 			.from('posts')
@@ -27,6 +39,7 @@
 		loading = false;
 	}
 
+	// realtime subscription
 	function subscribeToPostsChanges() {
 		channel = supabase
 			.channel('posts-changes')
@@ -41,17 +54,19 @@
 					console.log('Change received!', payload);
 					if (payload.eventType === 'INSERT') {
 						posts = [payload.new, ...posts];
+						// show new message toast when any user posts
 						toastStore.trigger(success);
 					} else if (payload.eventType === 'UPDATE') {
-						posts = posts.map((post) => (post.id === payload.new.id ? payload.new : post));
+						posts = posts.map((post: any) => (post.id === payload.new.id ? payload.new : post));
 					} else if (payload.eventType === 'DELETE') {
-						posts = posts.filter((post) => post.id !== payload.old.id);
+						posts = posts.filter((post: any) => post.id !== payload.old.id);
 					}
 				}
 			)
 			.subscribe();
 	}
 
+	//LIFECYCLE
 	onMount(async () => {
 		loading = true;
 		await fetchPosts();
@@ -64,13 +79,14 @@
 		}
 	});
 
-	//LOADING
+	// UI
+	// loading spinner
 	const conicStops: ConicStop[] = [
 		{ color: 'transparent', start: 0, end: 25 },
 		{ color: 'rgb(var(--color-primary-500))', start: 75, end: 100 }
 	];
 
-	// HELPERS
+	// formatting helpers
 	function trimUserId(userId: string): string {
 		return userId.slice(-5);
 	}
@@ -80,34 +96,39 @@
 		return formatDistanceToNow(date, { addSuffix: true });
 	}
 
-	// TOASTS
+	// toasts
 	const toastStore = getToastStore();
+
+	const success: ToastSettings = {
+		message: '📨 New post!',
+		background: 'variant-filled-primary',
+		hideDismiss: true,
+		timeout: 2000 // ms -> 5 sec
+	};
 
 	const error: ToastSettings = {
 		message: '⚠️ Error',
-		background: 'variant-error-primary',
-		hideDismiss: true,
-		timeout: 2000 // ms -> 5 sec
-	};
-	const failure: ToastSettings = {
-		message: '🤔 ...something went wrong',
-		background: 'variant-error-primary',
+		background: 'variant-filled-error',
 		hideDismiss: true,
 		timeout: 2000 // ms -> 5 sec
 	};
 
-	//Superforms
+	const failure: ToastSettings = {
+		message: '🤔 ...something went wrong',
+		background: 'variant-filled-error',
+		hideDismiss: true,
+		timeout: 2000 // ms -> 5 sec
+	};
+
+	//FORMS
 	const { form, errors, enhance } = superForm(data.form, {
 		onResult: ({ result }) => {
 			switch (result.type) {
-				case 'success':
-					toastStore.trigger(success);
-					break;
 				case 'error':
 					toastStore.trigger(error);
 					break;
 				case 'failure':
-					toastStore.trigger(error);
+					toastStore.trigger(failure);
 					break;
 				default:
 					return;
@@ -117,17 +138,23 @@
 	});
 </script>
 
+<!-- CREATE POSTS -->
 <div class="container mx-auto flex justify-center items-center my-8">
 	<div class="space-y-10 text-center flex flex-col items-center">
+		<!-- heading -->
 		<h1 class="h1 font-bold text-primary-500">/s</h1>
-
+		<!-- user ID -->
 		<span class="text-xl"
 			>Your user ID is <p class="text-4xl font-bold ml-2">
-				<GradientText>{trimUserId(session.user.id)}</GradientText>
+				<GradientText
+					>{session?.user?.id ? trimUserId(session.user.id) : 'Not logged in'}</GradientText
+				>
 			</p></span
 		>
+		<!-- post text form -->
 		<form method="POST" use:enhance>
-			<span class="flex justify-between gap-x-2">
+			<span class="flex justify-start mb-2 text-lg">Write a post!</span>
+			<span class="flex gap-x-2">
 				<label class="label" for="content">
 					<textarea
 						name="content"
@@ -156,10 +183,13 @@
 
 <hr class="!border-t-2 !border-primary-500 mx-24" />
 
+<!-- VIEW POSTS -->
 <div class="mx-auto my-8 gap-y-8 flex flex-col">
+	<!-- loading spinner -->
 	{#if loading}
 		<ConicGradient stops={conicStops} spin width="w-12"></ConicGradient>
 	{:else}
+		<!-- post cards -->
 		{#each posts as post (post.id)}
 			<div class="card mx-4">
 				<header class="card-header text-gray-500">
@@ -169,7 +199,7 @@
 					{post.content}
 				</section>
 				<footer class="card-footer flex justify-end">
-					{#if post.user_id == session.user.id}
+					{#if session && post.user_id == session.user.id}
 						<p class="text-xl font-bold">
 							<GradientText>{trimUserId(post.user_id)}</GradientText>
 						</p>

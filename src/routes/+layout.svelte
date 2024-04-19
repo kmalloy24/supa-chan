@@ -1,11 +1,14 @@
 <script lang="ts">
 	import '../app.postcss';
-	import { AppShell, AppBar } from '@skeletonlabs/skeleton';
+
+	// Skeleton imports
+	import { AppShell, AppBar, storePopup, initializeStores, Toast } from '@skeletonlabs/skeleton';
 
 	// Floating UI for Popups
 	import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
-	import { storePopup, initializeStores, Toast } from '@skeletonlabs/skeleton';
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
+
+	//init global stores for skeleton singleton components
 	initializeStores();
 </script>
 
@@ -18,6 +21,7 @@
 		<!-- App Bar -->
 		<AppBar>
 			<svelte:fragment slot="lead">
+				<!-- Supabase logo -->
 				<a href="/">
 					<svg
 						class="mr-4 w-8"
@@ -65,9 +69,12 @@
 					</svg>
 				</a>
 
+				<!-- Title -->
 				<strong class="text-lg uppercase text-primary-500">OSS Hackathon 2024</strong>
 			</svelte:fragment>
+
 			<svelte:fragment slot="trail">
+				<!-- Github logo -->
 				<a href="https://github.com/kmalloy24/supa-chan" target="_blank" rel="noreferrer">
 					<svg
 						class="fill-primary-500 mx-2"
