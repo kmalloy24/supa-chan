@@ -165,7 +165,7 @@
 					/>
 				</label>
 
-				<button type="submit" class="btn variant-ghost-primary hover:variant-filled-primary"
+				<button type="submit" class="btn h-16 variant-ghost-primary hover:variant-filled-primary"
 					><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"
 						><path
 							fill="currentColor"

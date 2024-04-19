@@ -1,6 +1,6 @@
 // IMPORTS
 // Svelte
-import { error, fail } from '@sveltejs/kit';
+import { error, fail, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 // Superforms
 import { message, superValidate } from 'sveltekit-superforms/server';
@@ -10,6 +10,10 @@ import { postSchema } from '$lib/zod-schemas';
 
 // LOAD FUNCTION
 export const load: PageServerLoad = async (event) => {
+	const session = await event.locals.safeGetSession();
+	if (!session) {
+		redirect(302, '/');
+	}
 	return {
 		form: await superValidate(zod(postSchema))
 	};
