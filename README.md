@@ -24,9 +24,16 @@
 3. `pnpm dev`
 4. [![Fork Supabase Database](https://supafork.com/button)](https://supafork.com/new?repository_url=https%3A%2F%2Fgithub.com%2Fkmalloy24%2Fsupa-chan)
 
-5. create `.env.local` in the root directory and add
+5. Create `.env.local` in the root directory and add
 
 ``` text
 PUBLIC_SUPABASE_URL=your_supabase_project_url
 PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 ```
+
+## 🗺️ Roadmap
+
+- [ ] Config captcha
+- [ ] Infinite scroll
+- [ ] Config Supafork & test quick start guide
+- [ ] Show current amount of users signed in
